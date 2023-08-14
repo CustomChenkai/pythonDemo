@@ -102,12 +102,12 @@ def get_net_data(filename):
         for i in range(len(df_data)):
             print(str(i))
             data1 = trim(str(df_data.loc[i, "买家姓名"]).replace(u'\xa0', ' '))
-            data1 = re.sub(r"\d+", '', data1)
-            data2 = trim(str(df_data.loc[i, "县/城市"]).replace(u'\xa0', ' '))
-            data3 = trim(str(df_data.loc[i, "州/地区"]).replace(u'\xa0', ' '))
+            data1 = re.sub(r"\d+", '', data1).split('/')[0]
+            data2 = trim(str(df_data.loc[i, "县/城市"]).replace(u'\xa0', ' ')).split('/')[0]
+            data3 = trim(str(df_data.loc[i, "州/地区"]).replace(u'\xa0', ' ')).split('/')[0]
             data4 = trim(str(df_data.loc[i, "收件人"]).replace(u'\xa0', ' '))
-            data4 = re.sub(r"\d+", '', data4)
-            data5 = trim(str(df_data.loc[i, "地址"]).replace(u'\xa0', ' '))
+            data4 = re.sub(r"\d+", '', data4).split('/')[0]
+            data5 = trim(str(df_data.loc[i, "地址"]).replace(u'\xa0', ' ')).split('/')[0]
             df_data.loc[i, "pid"] = 'None'
             if data1 is None or data1 == '' or data1 == 'nan' or data1 == 'None' or not isinstance(data1, str) \
                     or not isinstance(data3, str):
@@ -330,9 +330,10 @@ def get_net_data_f(file_name_f):
             if zd_task:
                 break
             print(str(i))
-            data1 = str(df_data.loc[i, "买家姓名"]).replace(u'\xa0', ' ')
+            data1 = str(df_data.loc[i, "买家姓名"]).replace(u'\xa0', ' ').split('/')[0]
             data2 = str(df_data.loc[i, "pid"]).replace(u'\xa0', ' ')
-            if data2 is None or data2 == 'None' or data2 == '404' or data2 == 'nan' or data2 == '' or not isinstance(data2, str):
+            if data2 is None or data2 == 'None' or data2 == '404' or data2 == 'nan' or data2 == '' or not isinstance(
+                    data2, str):
                 df_data.loc[i, "手机"] = "None"
                 df_data.loc[i, "手机数据年份"] = "None"
                 df_data.loc[i, "邮箱"] = "None"
@@ -466,6 +467,7 @@ def get_net_data_f(file_name_f):
             mkdir(result_file_name)
             df_data.to_excel(result_file_name + second_search_file_output_name)
 
+
 def trim(str_v):
     str_v = re.sub(u"\\(.*?\\)", " ", re.sub(u"\\s\\(.*?\\)\\s", " ", str_v)).replace('  ', ' ').lower()
     if str_v.startswith(' ') or str_v.endswith(' '):
@@ -476,13 +478,13 @@ def trim(str_v):
 def get_url_by_line(df_data: DataFrame, line_num):
     line_num = line_num - 2
     data1 = trim(df_data.loc[line_num, "买家姓名"].replace(u'\xa0', ' '))
-    data1 = re.sub(r"\d+", '', data1)
-    data2 = trim(df_data.loc[line_num, "县/城市"].replace(u'\xa0', ' '))
-    data3 = trim(df_data.loc[line_num, "州/地区"].replace(u'\xa0', ' '))
+    data1 = re.sub(r"\d+", '', data1).split('/')[0]
+    data2 = trim(df_data.loc[line_num, "县/城市"].replace(u'\xa0', ' ')).split('/')[0]
+    data3 = trim(df_data.loc[line_num, "州/地区"].replace(u'\xa0', ' ')).split('/')[0]
     data4 = trim(df_data.loc[line_num, "收件人"].replace(u'\xa0', ' '))
-    data4 = re.sub(r"\d+", '', data4)
-    data5 = trim(df_data.loc[line_num, "地址"].replace(u'\xa0', ' '))
-    if data1 is None or data1 == '' or data1 == 'None' or data1 == 'nan'  or not isinstance(data1, str) \
+    data4 = re.sub(r"\d+", '', data4).split('/')[0]
+    data5 = trim(df_data.loc[line_num, "地址"].replace(u'\xa0', ' ')).split('/')[0]
+    if data1 is None or data1 == '' or data1 == 'None' or data1 == 'nan' or not isinstance(data1, str) \
             or not isinstance(data3, str):
         print("信息无效")
         return
@@ -572,7 +574,8 @@ def address_search_2():
             data5 = trim(str(df_data.loc[i, "地址"]).replace(u'\xa0', ' '))
             data1 = data1.lower().replace('.', '').replace(',', '').replace('-', '')
             data4 = data4.lower().replace('.', '').replace(',', '').replace('-', '')
-            if data1 is None or data1 == '' or data1 == 'None' or data1 == 'nan' or data5 is None or not isinstance(data1, str) \
+            if data1 is None or data1 == '' or data1 == 'None' or data1 == 'nan' or data5 is None or not isinstance(
+                    data1, str) \
                     or not isinstance(data3, str) or not isinstance(data5, str):
                 continue
             match_level = df_data.loc[i, "匹配等级"]
@@ -739,16 +742,20 @@ if __name__ == '__main__':
         print('配置文件file_name后缀（格式）不对，默认使用' + file_output_name_ + '， 请将文件名改为' + file_output_name_ + '， 或者修改配置文件')
         file_output_name = file_output_name_
     if second_search_file_output_name is None or second_search_file_output_name.replace(' ', '') == '':
-        print('配置文件file_name为空，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
+        print(
+            '配置文件file_name为空，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
         second_search_file_output_name = second_search_file_output_name_
     if not second_search_file_output_name.endswith('.xlsx') and not second_search_file_output_name.endswith('.xls'):
-        print('配置文件file_name后缀（格式）不对，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
+        print(
+            '配置文件file_name后缀（格式）不对，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
         second_search_file_output_name = second_search_file_output_name_
     if second_search_source_file_name is None or second_search_source_file_name.replace(' ', '') == '':
-        print('配置文件file_name为空，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
+        print(
+            '配置文件file_name为空，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
         second_search_source_file_name = second_search_source_file_name_
     if not second_search_source_file_name.endswith('.xlsx') and not second_search_source_file_name.endswith('.xls'):
-        print('配置文件file_name后缀（格式）不对，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
+        print(
+            '配置文件file_name后缀（格式）不对，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
         second_search_source_file_name = second_search_source_file_name_
     if one_open_browser_count is None or one_open_browser_count.replace(' ', '') == '':
         print('配置文件one_open_browser_count为空，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
