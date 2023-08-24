@@ -9,7 +9,7 @@ import pandas as pd
 from time import sleep
 import keyboard
 from pandas import DataFrame
-from selenium import webdriver
+import undetected_chromedriver as uc
 import os
 import re
 import configparser
@@ -31,8 +31,9 @@ result_file_name = './result/'
 
 
 def open_browser_get_cookie(url):
-    driver = webdriver.Edge()  # Edge浏览器
+    driver = uc.Chrome()
     driver.get(url)
+    sleep(2)
     cookies = driver.get_cookies()
     user_agent_ = driver.execute_script('return navigator.userAgent')
     cookie_result = ''
@@ -50,7 +51,6 @@ def open_browser_get_cookie(url):
     global user_agent
     user_agent = user_agent_
     driver.quit()
-    sleep(1)
 
 
 def print_hi(name):
@@ -157,10 +157,8 @@ def get_net_data(filename):
                 open_browser_get_cookie(url)
             headers = {
                 'User-Agent': user_agent,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                'Host': 'www.cyberbackgroundchecks.com',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                # 'Accept-Encoding': 'gzip, deflate, br',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
                 'Connection': 'keep-alive',
                 'Cookie': cookie,
             }
@@ -361,10 +359,8 @@ def get_net_data_f(file_name_f):
                     open_browser_get_cookie(url)
                 headers = {
                     'User-Agent': user_agent,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                    'Host': 'www.cyberbackgroundchecks.com',
-                    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                    # 'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-',
+                    'Accept-Language': 'zh-CN,zh;q=0.9',
                     'Connection': 'keep-alive',
                     'Cookie': cookie,
                 }
@@ -593,10 +589,8 @@ def address_search_2():
                 open_browser_get_cookie(url)
             headers = {
                 'User-Agent': user_agent,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                'Host': 'www.cyberbackgroundchecks.com',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                # 'Accept-Encoding': 'gzip, deflate, br',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
                 'Connection': 'keep-alive',
                 'Cookie': cookie,
             }
