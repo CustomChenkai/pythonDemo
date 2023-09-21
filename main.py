@@ -13,6 +13,8 @@ import undetected_chromedriver as uc
 import os
 import re
 import configparser
+import logging
+import logging.handlers
 
 config = configparser.ConfigParser()
 config.read("my.ini", encoding="utf-8")
@@ -155,6 +157,9 @@ def get_net_data(filename):
             print(url)
             if i % int(one_open_browser_count) == 0:
                 open_browser_get_cookie(url)
+            if i == 2:
+                a = [2, 3]
+                b = a[3]
             headers = {
                 'User-Agent': user_agent,
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-',
@@ -704,6 +709,38 @@ def mkdir(path):
         print
 
 
+lg = logging.getLogger("Error")
+
+
+def init_log():
+    log_path = os.getcwd() + "/log"
+    try:
+        if not os.path.exists(log_path):
+            os.makedirs(log_path)
+    except:
+        print("创建日志目录失败")
+        exit(1)
+    if len(lg.handlers) == 0:  # 避免重复
+        # 2.创建handler(负责输出，输出到屏幕stream-handler,输出到文件filehandler)
+        filename = os.path.join(log_path, 'project.log')
+        fh = logging.FileHandler(filename, mode="a", encoding="utf-8")  # 默认mode 为a模式，默认编码方式为utf-8
+        sh = logging.StreamHandler()
+        # 3.创建formatter：
+        formatter = logging.Formatter(
+            fmt='%(asctime)s - %(levelname)s - Model:%(filename)s - Fun:%(funcName)s - Message:%(message)s - Line:%('
+                'lineno)d')
+        # 4.绑定关系：①logger绑定handler
+        lg.addHandler(fh)
+        lg.addHandler(sh)
+        # # ②为handler绑定formatter
+        fh.setFormatter(formatter)
+        sh.setFormatter(formatter)
+        # # 5.设置日志级别(日志级别两层关卡必须都通过，日志才能正常记录)
+        lg.setLevel(40)
+        fh.setLevel(40)
+        sh.setLevel(40)
+
+
 file_name_ = 'work.xlsx'
 proxy_host_ = 'http://127.0.0.1:33210/'
 sleep_time_ = '1'
@@ -711,52 +748,9 @@ file_output_name_ = 'result.xlsx'
 one_open_browser_count_ = '500'
 second_search_file_output_name_ = 'result.xlsx'
 second_search_source_file_name_ = 'result_second_search.xlsx'
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('欢迎使用，根据提示完成所需操作')
-    if file_name is None or file_name.replace(' ', '') == '':
-        print('配置文件file_name为空，默认使用' + file_name_ + '， 请将文件名改为' + file_name_ + '， 或者修改配置文件')
-        file_name = file_name_
-    if not file_name.endswith('.xlsx') and not file_name.endswith('.xls'):
-        print('配置文件file_name后缀（格式）不对，默认使用' + file_name_ + '， 请将文件名改为' + file_name_ + '， 或者修改配置文件')
-        file_name = file_name_
-    if proxy_host is None or proxy_host.replace(' ', '') == '':
-        print('配置文件host为空，默认使用' + proxy_host_ + '， 请修改配置文件，否则将影响正常运行')
-        proxy_host = proxy_host_
-    if sleep_time is None or sleep_time.replace(' ', '') == '':
-        print('配置文件sleep_time为空，默认使用' + sleep_time_ + '， 请修改配置文件，否则将影响正常运行')
-        sleep_time = sleep_time_
-    if not sleep_time.isdigit():
-        print('配置文件sleep_time不是纯数字，默认使用' + sleep_time_ + '， 请修改配置文件，否则将影响正常运行')
-        sleep_time = sleep_time_
-    if file_output_name is None or file_output_name.replace(' ', '') == '':
-        print('配置文件file_name为空，默认使用' + file_output_name_ + '， 请将文件名改为' + file_output_name_ + '， 或者修改配置文件')
-        file_output_name = file_output_name_
-    if not file_output_name.endswith('.xlsx') and not file_output_name.endswith('.xls'):
-        print('配置文件file_name后缀（格式）不对，默认使用' + file_output_name_ + '， 请将文件名改为' + file_output_name_ + '， 或者修改配置文件')
-        file_output_name = file_output_name_
-    if second_search_file_output_name is None or second_search_file_output_name.replace(' ', '') == '':
-        print(
-            '配置文件file_name为空，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
-        second_search_file_output_name = second_search_file_output_name_
-    if not second_search_file_output_name.endswith('.xlsx') and not second_search_file_output_name.endswith('.xls'):
-        print(
-            '配置文件file_name后缀（格式）不对，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
-        second_search_file_output_name = second_search_file_output_name_
-    if second_search_source_file_name is None or second_search_source_file_name.replace(' ', '') == '':
-        print(
-            '配置文件file_name为空，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
-        second_search_source_file_name = second_search_source_file_name_
-    if not second_search_source_file_name.endswith('.xlsx') and not second_search_source_file_name.endswith('.xls'):
-        print(
-            '配置文件file_name后缀（格式）不对，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
-        second_search_source_file_name = second_search_source_file_name_
-    if one_open_browser_count is None or one_open_browser_count.replace(' ', '') == '':
-        print('配置文件one_open_browser_count为空，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
-        one_open_browser_count = one_open_browser_count_
-    if not one_open_browser_count.isdigit():
-        print('配置文件one_open_browser_count不是纯数字，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
-        one_open_browser_count = one_open_browser_count_
+
+
+def main_method():
     while True:
         s = input('\n输入数字：\n1. 开始根据提供的“' + file_name + '“进行搜索，产生的结果将会在“' + file_output_name +
                   '”中，按 10 搜索完直接进入二次搜索\n2. 输入对应的excel行数生成对应的网址\n3. 对“' + second_search_source_file_name +
@@ -822,3 +816,57 @@ if __name__ == '__main__':
                 quit()  # 退出循环
             if keyboard.is_pressed('tab'):
                 break
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    init_log()
+    print_hi('欢迎使用，根据提示完成所需操作')
+    if file_name is None or file_name.replace(' ', '') == '':
+        print('配置文件file_name为空，默认使用' + file_name_ + '， 请将文件名改为' + file_name_ + '， 或者修改配置文件')
+        file_name = file_name_
+    if not file_name.endswith('.xlsx') and not file_name.endswith('.xls'):
+        print('配置文件file_name后缀（格式）不对，默认使用' + file_name_ + '， 请将文件名改为' + file_name_ + '， 或者修改配置文件')
+        file_name = file_name_
+    if proxy_host is None or proxy_host.replace(' ', '') == '':
+        print('配置文件host为空，默认使用' + proxy_host_ + '， 请修改配置文件，否则将影响正常运行')
+        proxy_host = proxy_host_
+    if sleep_time is None or sleep_time.replace(' ', '') == '':
+        print('配置文件sleep_time为空，默认使用' + sleep_time_ + '， 请修改配置文件，否则将影响正常运行')
+        sleep_time = sleep_time_
+    if not sleep_time.isdigit():
+        print('配置文件sleep_time不是纯数字，默认使用' + sleep_time_ + '， 请修改配置文件，否则将影响正常运行')
+        sleep_time = sleep_time_
+    if file_output_name is None or file_output_name.replace(' ', '') == '':
+        print('配置文件file_name为空，默认使用' + file_output_name_ + '， 请将文件名改为' + file_output_name_ + '， 或者修改配置文件')
+        file_output_name = file_output_name_
+    if not file_output_name.endswith('.xlsx') and not file_output_name.endswith('.xls'):
+        print('配置文件file_name后缀（格式）不对，默认使用' + file_output_name_ + '， 请将文件名改为' + file_output_name_ + '， 或者修改配置文件')
+        file_output_name = file_output_name_
+    if second_search_file_output_name is None or second_search_file_output_name.replace(' ', '') == '':
+        print(
+            '配置文件file_name为空，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
+        second_search_file_output_name = second_search_file_output_name_
+    if not second_search_file_output_name.endswith('.xlsx') and not second_search_file_output_name.endswith('.xls'):
+        print(
+            '配置文件file_name后缀（格式）不对，默认使用' + second_search_file_output_name_ + '， 请将文件名改为' + second_search_file_output_name_ + '， 或者修改配置文件')
+        second_search_file_output_name = second_search_file_output_name_
+    if second_search_source_file_name is None or second_search_source_file_name.replace(' ', '') == '':
+        print(
+            '配置文件file_name为空，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
+        second_search_source_file_name = second_search_source_file_name_
+    if not second_search_source_file_name.endswith('.xlsx') and not second_search_source_file_name.endswith('.xls'):
+        print(
+            '配置文件file_name后缀（格式）不对，默认使用' + second_search_source_file_name_ + '， 请将文件名改为' + second_search_source_file_name_ + '， 或者修改配置文件')
+        second_search_source_file_name = second_search_source_file_name_
+    if one_open_browser_count is None or one_open_browser_count.replace(' ', '') == '':
+        print('配置文件one_open_browser_count为空，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
+        one_open_browser_count = one_open_browser_count_
+    if not one_open_browser_count.isdigit():
+        print('配置文件one_open_browser_count不是纯数字，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
+        one_open_browser_count = one_open_browser_count_
+    try:
+        main_method()
+        pass
+    except Exception as e:
+        lg.error(e)
