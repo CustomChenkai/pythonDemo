@@ -2,6 +2,8 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import sys
+
 import requests
 import urllib3
 from lxml import etree
@@ -15,6 +17,8 @@ import re
 import configparser
 import logging
 import logging.handlers
+import traceback
+import time
 
 config = configparser.ConfigParser()
 config.read("my.ini", encoding="utf-8")
@@ -722,7 +726,7 @@ def init_log():
         exit(1)
     if len(lg.handlers) == 0:  # 避免重复
         # 2.创建handler(负责输出，输出到屏幕stream-handler,输出到文件filehandler)
-        filename = os.path.join(log_path, 'project.log')
+        filename = os.path.join(log_path, 'format_info.log')
         fh = logging.FileHandler(filename, mode="a", encoding="utf-8")  # 默认mode 为a模式，默认编码方式为utf-8
         sh = logging.StreamHandler()
         # 3.创建formatter：
@@ -865,8 +869,15 @@ if __name__ == '__main__':
     if not one_open_browser_count.isdigit():
         print('配置文件one_open_browser_count不是纯数字，默认使用' + one_open_browser_count_ + '， 请修改配置文件，否则将影响正常运行')
         one_open_browser_count = one_open_browser_count_
+
     try:
         main_method()
         pass
     except Exception as e:
+        # e.args
+        errorFile = open('./log/traceback.log', 'a+', encoding='utf-8')
+        errorFile.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "\n")
+        errorFile.write(traceback.format_exc())
+        errorFile.write("\n\n\n")
+        errorFile.close()
         lg.error(e)
